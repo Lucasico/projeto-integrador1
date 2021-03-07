@@ -36,5 +36,4 @@ router.delete(
   "/clients/:id",
   deleteClientController.handle.bind(deleteClientController)
 );
-
 module.exports = { router };

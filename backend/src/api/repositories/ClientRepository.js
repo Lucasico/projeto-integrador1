@@ -18,6 +18,7 @@ module.exports = {
   async getById({ id }) {
     const clientRepository = getRepository(Client);
     const client = await clientRepository.findOne(id);
+
     return client;
   },
 
@@ -39,9 +40,7 @@ module.exports = {
     clientToBeUpdated.name = newData.name;
     clientToBeUpdated.cnpj = newData.cnpj;
     clientToBeUpdated.max_number_users = newData.maxNumberUsers;
-
     await clientRepository.save(clientToBeUpdated);
-
     return clientToBeUpdated;
   },
 
