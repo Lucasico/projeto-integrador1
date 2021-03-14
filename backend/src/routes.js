@@ -2,13 +2,13 @@ const { Router } = require("express");
 
 const router = Router();
 
-const { createClientController } = require("./api/useCase/Client/CreateClient");
-const { listClientsController } = require("./api/useCase/Client/ListClientes");
+const { createStateController } = require("./api/useCase/State/CreateState");
 const {
-  getClientByIDController,
-} = require("./api/useCase/Client/GetClientByID");
-const { updateClientController } = require("./api/useCase/Client/UpdateClient");
-const { deleteClientController } = require("./api/useCase/Client/DeleteClient");
+  listCityByStateController,
+} = require("./api/useCase/State/ListCityByState");
+const { findAllTypesController } = require("./api/useCase/Type/FindAllTypes");
+
+const { createUserController } = require("./api/useCase/User/CreateUser");
 
 router.get("/health", (_, res) =>
   res.status(200).json({
@@ -16,24 +16,23 @@ router.get("/health", (_, res) =>
   })
 );
 
-router.get(
-  "/clients",
-  listClientsController.handle.bind(listClientsController)
-);
-router.get(
-  "/clients/:id",
-  getClientByIDController.handle.bind(getClientByIDController)
-);
+//--state routes--//
 router.post(
-  "/clients",
-  createClientController.handle.bind(createClientController)
+  "/states",
+  createStateController.handle.bind(createStateController)
 );
-router.put(
-  "/clients/:id",
-  updateClientController.handle.bind(updateClientController)
+
+router.get(
+  "/states/:id",
+  listCityByStateController.handle.bind(listCityByStateController)
 );
-router.delete(
-  "/clients/:id",
-  deleteClientController.handle.bind(deleteClientController)
+
+//--types routes --//
+router.get(
+  "/types",
+  findAllTypesController.handle.bind(findAllTypesController)
 );
+
+//--users routes --//
+router.post("/users", createUserController.handle.bind(createUserController));
 module.exports = { router };

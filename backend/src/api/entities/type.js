@@ -13,4 +13,15 @@ module.exports = new EntitySchema({
       type: "varchar",
     },
   },
+  relations: {
+    users: {
+      target: "User",
+      type: "one-to-many",
+      inverseSide: "type",
+      joinColumn: {
+        name: "id",
+        referencedColumnName: "type_id",
+      },
+    },
+  },
 });

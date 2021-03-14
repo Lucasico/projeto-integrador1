@@ -1,5 +1,6 @@
 const config = require("config");
-
+const SnakeNamingStrategy = require("typeorm-naming-strategies")
+  .SnakeNamingStrategy;
 // const Client = require("../api/entities/Client");
 // const Genre = require("../api/entities/Genre");
 // const State = require("../api/entities/State");
@@ -13,6 +14,7 @@ const connectionOptions = {
   username: config.get("postgres.username"),
   password: config.get("postgres.password"),
   database: config.get("postgres.database"),
+  namingStrategy: new SnakeNamingStrategy(),
   entities: ["src/api/entities/*.js"],
   migrations: ["src/database/migrations/*.js"],
   cli: {

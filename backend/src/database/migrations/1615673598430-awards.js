@@ -23,5 +23,7 @@ module.exports = class awards1615673598430 {
     );
   }
 
-  async down(queryRunner) {}
+  async down(queryRunner) {
+    await queryRunner.dropTable("awards");
+  }
 };

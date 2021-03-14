@@ -13,4 +13,17 @@ module.exports = new EntitySchema({
       type: "varchar",
     },
   },
+  relations: {
+    cities: {
+      target: "City",
+      type: "many-to-one",
+      cascade: true,
+      // eager: false,
+      // primary: true,
+      joinColumn: {
+        name: "id",
+        ReferencedColumnName: "state_id",
+      },
+    },
+  },
 });

@@ -18,7 +18,9 @@
     "express": "^4.17.1",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.31"
+    "typeorm": "^0.2.31",
+    "typeorm-naming-strategies": "^2.0.0",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "eslint": "^7.19.0",
