@@ -1,5 +1,6 @@
 const { schemaCreateUser } = require("./validation-schema");
 const getValidationErros = require("../../../utils/getValidationErros");
+const bcrypt = require("bcrypt");
 class CreateUserController {
   constructor({ createUserUseCase }) {
     this.createUserUseCase = createUserUseCase;
@@ -9,14 +10,9 @@ class CreateUserController {
       const data = await schemaCreateUser.validate(request.body, {
         abortEarly: false,
       });
-      const {
-        type_id,
-        city_id,
-        name,
-        email,
-        password,
-        telephone,
-      } = request.body;
+      let { type_id, city_id, name, email, password, telephone } = request.body;
+      const hashPassword = await bcrypt.hash(password, 10);
+      password = hashPassword;
       const res = await this.createUserUseCase.execute({
         type_id,
         city_id,

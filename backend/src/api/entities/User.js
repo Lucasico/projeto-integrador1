@@ -52,7 +52,7 @@ module.exports = new EntitySchema({
       cascade: true,
       // eager: true,
       // primary: true,
-      joinColumns: {
+      joinColumn: {
         name: "city_id",
         referencedColumnName: "id",
       },

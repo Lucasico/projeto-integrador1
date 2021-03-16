@@ -7,5 +7,6 @@
     "database": "projeto-integrador",
     "username": "postgres",
     "password": "Postgres2018!"
-  }
+  },
+  "jwtSecret": "l*7h*/$%Aasd7h1#@h12hj7Qj12"
 }

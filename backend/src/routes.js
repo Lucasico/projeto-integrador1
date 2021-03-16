@@ -9,6 +9,9 @@ const {
 const { findAllTypesController } = require("./api/useCase/Type/FindAllTypes");
 
 const { createUserController } = require("./api/useCase/User/CreateUser");
+const {
+  authenticateUserController,
+} = require("./api/useCase/User/FindUserEmail");
 
 router.get("/health", (_, res) =>
   res.status(200).json({
@@ -35,4 +38,10 @@ router.get(
 
 //--users routes --//
 router.post("/users", createUserController.handle.bind(createUserController));
+
+//--auth routes --//
+router.post(
+  "/authenticate",
+  authenticateUserController.handle.bind(authenticateUserController)
+);
 module.exports = { router };
