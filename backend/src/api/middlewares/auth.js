@@ -1,4 +1,3 @@
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const jwtKey = config.get("jwtSecret");
@@ -7,7 +6,8 @@ module.exports = function auth(req, res, next) {
   const token = req.header("Authorization");
   if (!token) {
     return res.status(401).json({
-      content: "Acess denied. No token provided",
+      status: "UNAUTHORIZED",
+      content: "Acesso negado, token não disponivel",
     });
   }
   try {
@@ -15,7 +15,9 @@ module.exports = function auth(req, res, next) {
     req.user = decoded;
     next();
   } catch (error) {
+    console.error("error =>", error);
     res.status(400).json({
+      status: "UNAUTHORIZED",
       content: "Invalid token",
     });
   }

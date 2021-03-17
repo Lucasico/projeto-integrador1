@@ -1,5 +1,5 @@
 const { Router } = require("express");
-
+const auth = require("./api/middlewares/auth");
 const router = Router();
 
 const { createStateController } = require("./api/useCase/State/CreateState");
@@ -27,6 +27,7 @@ router.post(
 
 router.get(
   "/states/:id",
+  auth,
   listCityByStateController.handle.bind(listCityByStateController)
 );
 
@@ -44,4 +45,5 @@ router.post(
   "/authenticate",
   authenticateUserController.handle.bind(authenticateUserController)
 );
+
 module.exports = { router };

@@ -11,13 +11,14 @@ const apiError = (status, message) => {
       return { statusCodeError: status, message };
       break;
     case ResponseStatus.NOT_FOUND:
+      return { statusCodeError: status, message };
       break;
     case ResponseStatus.INTERNAL_SERVER_ERROR:
+      return { statusCodeError: status, message };
       break;
     case ResponseStatus.UNAUTHORIZED:
       return { statusCodeError: status, message };
       break;
-
     default:
       break;
   }

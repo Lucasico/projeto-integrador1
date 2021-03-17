@@ -6,6 +6,8 @@ class ListCityByStateController {
   async handle(request, response) {
     try {
       const { id } = request.params;
+      const user = getUserAutenticated(token);
+      console.log("user", user);
       console.info("id da request", id);
       const res = await this.listCityByStateUseCase.execute({
         id,
