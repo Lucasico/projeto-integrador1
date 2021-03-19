@@ -22,8 +22,8 @@ module.exports = new EntitySchema({
       target: "State",
       type: "one-to-many",
       cascade: true,
-      eager: true,
-      primary: true,
+      // eager: true,
+      // primary: true,
       joinColumn: {
         name: "state_id",
         ReferencedColumnName: "id",

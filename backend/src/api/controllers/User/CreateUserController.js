@@ -10,9 +10,11 @@ class CreateUserController {
       const data = await schemaCreateUser.validate(request.body, {
         abortEarly: false,
       });
+
       let { type_id, city_id, name, email, password, telephone } = request.body;
       const hashPassword = await bcrypt.hash(password, 10);
       password = hashPassword;
+
       const res = await this.createUserUseCase.execute({
         type_id,
         city_id,
@@ -34,7 +36,6 @@ class CreateUserController {
         content: { name, email },
       });
     } catch (error) {
-      console.log("error", error);
       const errors = getValidationErros(error);
       if (errors) {
         return response.status(400).json({
@@ -43,6 +44,7 @@ class CreateUserController {
           content: errors,
         });
       }
+      console.log("error create user =>", error);
       return response.status(500).json({
         status: "ERROR",
         message: "Erro ao criar usuario",

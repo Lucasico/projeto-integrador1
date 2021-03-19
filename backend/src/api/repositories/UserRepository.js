@@ -18,10 +18,30 @@ module.exports = {
   //userRepository.find({ select: ["firstName", "lastName"] });
   async findOneUserEmail(email) {
     const userRepository = getRepository(User);
+
     const user = await userRepository.findOne({
       relations: ["type"],
       where: { email: email },
     });
+
     return user;
+  },
+
+  async showAllUsers({ page = 1, pageSize = 10 }) {
+    const userRepository = getRepository(User);
+
+    const offset = (page - 1) * pageSize;
+
+    const [usersList, quantity] = await userRepository.findAndCount({
+      select: ["id", "name", "telephone", "telephone"],
+      relations: ["type", "city"],
+      order: {
+        name: "ASC",
+      },
+      take: pageSize,
+      skip: offset,
+    });
+
+    return { usersList, quantity, currentPage: page };
   },
 };

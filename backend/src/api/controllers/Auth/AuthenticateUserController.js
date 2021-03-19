@@ -15,10 +15,22 @@ class AuthenticateUserController {
       const user = await this.findUserEmailUseCase.execute(email);
 
       if (!user) {
-        return apiError(401, "Email ou Senha Inválido");
+        return response.status(401).json({
+          status: "UNAUTHORIZED",
+          content: {
+            message: "Email ou Senha Inválido",
+          },
+        });
       } else {
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) return apiError(401, "Email ou Senha Inválido");
+        const validPassword = await bcrypt.compare(password, user.password);    
+        if (!validPassword) {
+          return response.status(401).json({
+            status: "UNAUTHORIZED",
+            content: {
+              message: "Email ou Senha Inválido",
+            },
+          });
+        }
         const token = jwt.sign(
           { id: user.id, name: user.name, type: { ...user.type } },
           jwtKey,

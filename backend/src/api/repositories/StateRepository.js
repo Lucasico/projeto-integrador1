@@ -10,7 +10,6 @@ module.exports = {
   },
 
   async listCityByState(id) {
-    console.log("chegou no repositorio", id);
     const cityRepository = getRepository(City);
     const cities = cityRepository
       .createQueryBuilder("cities")
