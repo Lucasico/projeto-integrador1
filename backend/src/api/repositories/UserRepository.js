@@ -5,9 +5,11 @@ const User = require("../entities/User");
 module.exports = {
   async create(data) {
     const userRepository = getRepository(User);
+
     const userAlreadyExist = await userRepository.findOne({
-      where: [{ name: data.name }, { email: data.email }],
+      where: [{ email: data.email }],
     });
+
     if (userAlreadyExist) {
       return apiError(400, "Usuário deve ser único");
     } else {
@@ -15,7 +17,7 @@ module.exports = {
       return newState;
     }
   },
-  //userRepository.find({ select: ["firstName", "lastName"] });
+
   async findOneUserEmail(email) {
     const userRepository = getRepository(User);
 
@@ -33,7 +35,7 @@ module.exports = {
     const offset = (page - 1) * pageSize;
 
     const [usersList, quantity] = await userRepository.findAndCount({
-      select: ["id", "name", "telephone", "telephone"],
+      select: ["id", "name", "telephone", "email"],
       relations: ["type", "city"],
       order: {
         name: "ASC",
@@ -43,5 +45,73 @@ module.exports = {
     });
 
     return { usersList, quantity, currentPage: page };
+  },
+
+  async findByIdUser(id) {
+    const userRepository = getRepository(User);
+
+    const user = await userRepository.findOne({
+      select: ["id", "name", "telephone", "email"],
+      relations: ["type", "city"],
+      where: { id: id },
+    });
+
+    return user;
+  },
+
+  async deleteUser({ id }) {
+    const userRepository = getRepository(User);
+
+    const userToBeExcluded = await userRepository.findOne(id);
+
+    if (!userToBeExcluded) return apiError(400, "Usuário Não Encontrado");
+
+    await userRepository.remove(userToBeExcluded);
+
+    return userToBeExcluded;
+  },
+
+  async updateUser(id, newData) {
+    // console.log("id", id);
+    // console.log("data", newData);
+    // return;
+
+    const userRepository = getRepository(User);
+    const userToBeUpdated = await userRepository.findOne(id);
+
+    if (!userToBeUpdated) return apiError(400, "Usuário Não Encontrado");
+
+    const uniqueUserEmail = await this.findOneUserEmail(newData.email);
+
+    if (!uniqueUserEmail) {
+      //verificar email unico
+
+      userToBeUpdated.type_id = newData.type_id;
+      userToBeUpdated.city_id = newData.city_id;
+      userToBeUpdated.name = newData.name;
+      userToBeUpdated.email = newData.email;
+      // userToBeUpdated.password = newData.password;
+      userToBeUpdated.telephone = newData.telephone;
+
+      await userRepository.save(userToBeUpdated);
+
+      return userToBeUpdated;
+    }
+
+    if (uniqueUserEmail.id === id) {
+      //verificar email unico
+      userToBeUpdated.type_id = newData.type_id;
+      userToBeUpdated.city_id = newData.city_id;
+      userToBeUpdated.name = newData.name;
+      userToBeUpdated.email = newData.email;
+      // userToBeUpdated.password = newData.password;
+      userToBeUpdated.telephone = newData.telephone;
+
+      await userRepository.save(userToBeUpdated);
+
+      return userToBeUpdated;
+    }
+    console.log("chegou no erro");
+    return apiError(400, "Email deve ser unico");
   },
 };

@@ -18,4 +18,17 @@ const schemaCreateUser = Yup.object().shape({
   ),
 });
 
-module.exports = { schemaCreateUser };
+const schemaUpdateUser = Yup.object().shape({
+  type_id: Yup.number().required("Tipo de usuario é um campo obrigatório"),
+  city_id: Yup.number().required("Cidade é um campo obrigatório"),
+  name: Yup.string().required("Nome é um campo obrigatório"),
+  email: Yup.string()
+    .email("Formato de email inválido")
+    .required("Email é um campo obrigatório"),
+  telephone: Yup.string().matches(
+    telephoneRegex,
+    "Formato de telefone inválido"
+  ),
+});
+
+module.exports = { schemaCreateUser, schemaUpdateUser };

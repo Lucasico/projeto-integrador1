@@ -7,7 +7,7 @@ class CreateUserController {
   }
   async handle(request, response) {
     try {
-      const data = await schemaCreateUser.validate(request.body, {
+      await schemaCreateUser.validate(request.body, {
         abortEarly: false,
       });
 
@@ -30,11 +30,13 @@ class CreateUserController {
           message: res.message,
         });
       }
+
       return response.status(201).json({
         status: "OK",
         message: "Usuario cadastrado com sucesso",
         content: { name, email },
       });
+      
     } catch (error) {
       const errors = getValidationErros(error);
       if (errors) {
