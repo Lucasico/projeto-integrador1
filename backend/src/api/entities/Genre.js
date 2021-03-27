@@ -14,4 +14,15 @@ module.exports = new EntitySchema({
       nullable: false,
     },
   },
+  relations: {
+    film: {
+      target: "Film",
+      type: "one-to-many",
+      inverseSide: "genre",
+      joinColumn: {
+        name: "id",
+        referencedColumnName: "genre_id",
+      },
+    },
+  },
 });

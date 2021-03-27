@@ -1,4 +1,6 @@
 {
+  "pathUploads":"localhost",
+  "pathUploadsFolder":"/uploads",
   "port": 5000,
   "postgres": {
     "enable": true,

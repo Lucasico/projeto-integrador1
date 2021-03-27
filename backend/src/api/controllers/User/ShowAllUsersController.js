@@ -6,10 +6,12 @@ class ShowAllUsersController {
   async handle(request, response) {
     try {
       const { page = 1, pageSize = 10 } = request.headers;
+      const { query } = request.query;
 
       const usersList = await this.showAllUsersUseCase.execute({
         page: Number(page),
         pageSize: Number(pageSize),
+        query,
       });
 
       return response.status(200).json({

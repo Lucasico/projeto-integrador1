@@ -57,5 +57,10 @@ module.exports = new EntitySchema({
         referencedColumnName: "id",
       },
     },
+    list_watched: {
+      target: "List_watched_film",
+      inverseSide: "user",
+      type: "one-to-one",
+    },
   },
 });

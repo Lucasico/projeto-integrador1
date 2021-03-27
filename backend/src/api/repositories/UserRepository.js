@@ -29,20 +29,26 @@ module.exports = {
     return user;
   },
 
-  async showAllUsers({ page = 1, pageSize = 10 }) {
+  async showAllUsers({ page = 1, pageSize = 10, query }) {
     const userRepository = getRepository(User);
-
     const offset = (page - 1) * pageSize;
-
-    const [usersList, quantity] = await userRepository.findAndCount({
-      select: ["id", "name", "telephone", "email"],
-      relations: ["type", "city"],
-      order: {
-        name: "ASC",
-      },
-      take: pageSize,
-      skip: offset,
-    });
+    const [usersList, quantity] = await userRepository
+      .createQueryBuilder("users")
+      .select(["users.id", "users.name", "users.telephone", "users.email"])
+      .leftJoinAndSelect("users.type", "type")
+      .leftJoinAndSelect("users.city", "city")
+      .where("LOWER(users.name) like LOWER(:query)", {
+        query: `%${query || ""}%`,
+      })
+      .orWhere("LOWER(users.email) like LOWER(:query)", {
+        query: `%${query || ""}%`,
+      })
+      .orWhere("LOWER(users.telephone) like LOWER(:query)", {
+        query: `%${query || ""}%`,
+      })
+      .take(pageSize)
+      .skip(offset)
+      .getManyAndCount();
 
     return { usersList, quantity, currentPage: page };
   },
@@ -72,10 +78,6 @@ module.exports = {
   },
 
   async updateUser(id, newData) {
-    // console.log("id", id);
-    // console.log("data", newData);
-    // return;
-
     const userRepository = getRepository(User);
     const userToBeUpdated = await userRepository.findOne(id);
 
@@ -84,13 +86,10 @@ module.exports = {
     const uniqueUserEmail = await this.findOneUserEmail(newData.email);
 
     if (!uniqueUserEmail) {
-      //verificar email unico
-
       userToBeUpdated.type_id = newData.type_id;
       userToBeUpdated.city_id = newData.city_id;
       userToBeUpdated.name = newData.name;
       userToBeUpdated.email = newData.email;
-      // userToBeUpdated.password = newData.password;
       userToBeUpdated.telephone = newData.telephone;
 
       await userRepository.save(userToBeUpdated);
@@ -99,19 +98,16 @@ module.exports = {
     }
 
     if (uniqueUserEmail.id === id) {
-      //verificar email unico
       userToBeUpdated.type_id = newData.type_id;
       userToBeUpdated.city_id = newData.city_id;
       userToBeUpdated.name = newData.name;
       userToBeUpdated.email = newData.email;
-      // userToBeUpdated.password = newData.password;
       userToBeUpdated.telephone = newData.telephone;
 
       await userRepository.save(userToBeUpdated);
 
       return userToBeUpdated;
     }
-    console.log("chegou no erro");
     return apiError(400, "Email deve ser unico");
   },
 };

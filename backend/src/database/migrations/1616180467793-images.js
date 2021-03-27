@@ -4,13 +4,14 @@ module.exports = class images1616180467793 {
   async up(queryRunner) {
     await queryRunner.createTable(
       new Table({
-        name: "Images",
+        name: "images",
         columns: [
           {
             name: "id",
-            primary: true,
             type: "int",
-            generated: "increment",
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: "increment",
           },
           {
             name: "path",

@@ -11,7 +11,7 @@ module.exports = {
 
   async listCityByState(id) {
     const cityRepository = getRepository(City);
-    const cities = cityRepository
+    const cities = await cityRepository
       .createQueryBuilder("cities")
       .where("cities.state_id = :id", id)
       .getMany();

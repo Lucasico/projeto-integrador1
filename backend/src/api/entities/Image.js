@@ -2,7 +2,7 @@ const { EntitySchema } = require("typeorm");
 
 module.exports = new EntitySchema({
   name: "Image",
-  tableName: "Images",
+  tableName: "images",
   columns: {
     id: {
       primary: true,
@@ -12,6 +12,13 @@ module.exports = new EntitySchema({
     path: {
       type: "varchar",
       nullable: false,
+    },
+  },
+  relations: {
+    film: {
+      target: "Film",
+      inverseSide: "image",
+      type: "one-to-one",
     },
   },
 });

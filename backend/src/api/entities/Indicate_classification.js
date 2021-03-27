@@ -13,4 +13,11 @@ module.exports = new EntitySchema({
       type: "varchar",
     },
   },
+  relations: {
+    film: {
+      target: "Film",
+      inverseSide: "indicate_classification",
+      type: "one-to-one",
+    },
+  },
 });
