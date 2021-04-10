@@ -27,6 +27,14 @@ const {
 const { createFilmController } = require("./api/useCase/Film/CreateFilm");
 const { deleteFilmController } = require("./api/useCase/Film/DeleteFilm");
 const { findByIdFilmController } = require("./api/useCase/Film/FindByIdFilm");
+const { updateFilmController } = require("./api/useCase/Film/UpdateFilm");
+const { showAllFimlController } = require("./api/useCase/Film/ShowAllFilms");
+const {
+  showAllFilmByGenresController,
+} = require("./api/useCase/Film/ShowFilmByGenres");
+const {
+  filterFilmsByNameAndGenreAndindicateClassificationController,
+} = require("./api/useCase/Film/filterFilmsByNameAndGenreAndindicateClassification");
 
 router.get("/health", (_, res) =>
   res.status(200).json({
@@ -100,7 +108,6 @@ router.put(
 router.get(
   `${ROUTESPATH.GENRE}`,
   auth,
-  isAdmin,
   listGenreController.handle.bind(listGenreController)
 );
 //--indicate classification --//
@@ -124,7 +131,6 @@ router.post(
 router.get(
   `${ROUTESPATH.FILMS}/:id`,
   auth,
-  isAdmin,
   findByIdFilmController.handle.bind(findByIdFilmController)
 );
 
@@ -133,6 +139,35 @@ router.delete(
   auth,
   isAdmin,
   deleteFilmController.handle.bind(deleteFilmController)
+);
+
+router.put(
+  `${ROUTESPATH.FILMS}/:id`,
+  auth,
+  isAdmin,
+  upload.single("image"),
+  updateFilmController.handle.bind(updateFilmController)
+);
+
+router.get(
+  `${ROUTESPATH.FILMS}`,
+  auth,
+  isAdmin,
+  showAllFimlController.handle.bind(showAllFimlController)
+);
+
+router.get(
+  `${ROUTESPATH.FILMS}${ROUTESPATH.GENRE}/:genre`,
+  auth,
+  showAllFilmByGenresController.handle.bind(showAllFilmByGenresController)
+);
+
+router.get(
+  `/filter${ROUTESPATH.FILMS}`,
+  auth,
+  filterFilmsByNameAndGenreAndindicateClassificationController.handle.bind(
+    filterFilmsByNameAndGenreAndindicateClassificationController
+  )
 );
 
 module.exports = { router };

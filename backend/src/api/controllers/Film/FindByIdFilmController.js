@@ -7,7 +7,7 @@ class FindByIdFilmController {
     try {
       const idString = request.params.id;
       const id = parseInt(idString);
-      console.log("id que vai pro useCase", id);
+      console.log("id que vai pro useCase",);
       const res = await this.findByIdFilmUseCase.execute({
         id,
       });

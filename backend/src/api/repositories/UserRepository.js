@@ -48,6 +48,7 @@ module.exports = {
       })
       .take(pageSize)
       .skip(offset)
+      .orderBy("users.name", "ASC")
       .getManyAndCount();
 
     return { usersList, quantity, currentPage: page };

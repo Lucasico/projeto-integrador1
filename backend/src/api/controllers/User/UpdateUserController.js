@@ -38,7 +38,6 @@ class UpdateUserController {
       });
     } catch (error) {
       const errors = getValidationErros(error);
-
       if (errors) {
         return response.status(400).json({
           status: "ERROR",

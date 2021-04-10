@@ -4,11 +4,11 @@
   "port": 5000,
   "postgres": {
     "enable": true,
-    "host": "localhost",
+    "host": "ec2-18-233-83-165.compute-1.amazonaws.com",
     "port": 5432,
-    "database": "projeto-integrador",
-    "username": "postgres",
-    "password": "Postgres2018!"
+    "database": "d2jdlr35etenbv",
+    "username": "uaakyguduubqde",
+    "password": "e32f80e5648038438f768954cd2350322cf7e5ae2dbc444b0538066cb0bd5ed0"
   },
   "jwtSecret": "l*7h*/$%Aasd7h1#@h12hj7Qj12"
 }
