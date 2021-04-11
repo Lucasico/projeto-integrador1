@@ -14,6 +14,10 @@ module.exports = new EntitySchema({
       isNullable: false,
       primary: true,
     },
+    date_insertion: {
+      type: "timestamp with time zone",
+      primary: false,
+    },
   },
   relations: {
     list_favority: {

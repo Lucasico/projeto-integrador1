@@ -35,6 +35,15 @@ const {
 const {
   filterFilmsByNameAndGenreAndindicateClassificationController,
 } = require("./api/useCase/Film/filterFilmsByNameAndGenreAndindicateClassification");
+const {
+  insertFilmListController,
+} = require("./api/useCase/ListWatched/CheckListAlreadyExists");
+const {
+  removeFilmListController,
+} = require("./api/useCase/ListWatched/RemoveFilmList");
+const {
+  showAllFilmsInListController,
+} = require("./api/useCase/ListWatched/ShowAllFilmsInList");
 
 router.get("/health", (_, res) =>
   res.status(200).json({
@@ -168,6 +177,25 @@ router.get(
   filterFilmsByNameAndGenreAndindicateClassificationController.handle.bind(
     filterFilmsByNameAndGenreAndindicateClassificationController
   )
+);
+
+//--listWatch routes --//
+router.post(
+  `${ROUTESPATH.LISTWATCHED}`,
+  auth,
+  insertFilmListController.handle.bind(insertFilmListController)
+);
+
+router.delete(
+  `${ROUTESPATH.LISTWATCHED}`,
+  auth,
+  removeFilmListController.handle.bind(removeFilmListController)
+);
+
+router.get(
+  `${ROUTESPATH.LISTWATCHED}`,
+  auth,
+  showAllFilmsInListController.handle.bind(showAllFilmsInListController)
 );
 
 module.exports = { router };

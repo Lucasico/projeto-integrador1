@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/server.js",
+    "start": "nodemon ./src/server.js",
     "migration:run": "npx typeorm migration:run -f src/database/connectionOptions.js",
     "migration:revert": "npx typeorm migration:revert -f src/database/connectionOptions.js",
-    "migration:create": "npx typeorm migration:create -o -f src/database/connectionOptions.js -n",
-    "dev":"nodemon ./src/server.js"
+    "migration:create": "npx typeorm migration:create -o -f src/database/connectionOptions.js -n"
+   
   },
   "keywords": [],
   "author": "",
