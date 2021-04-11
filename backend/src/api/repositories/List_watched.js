@@ -57,9 +57,7 @@ module.exports = {
     return filmRemove;
   },
 
-  async showAllFilmsInList(user_id) {
-    const page = 1;
-    const pageSize = 10;
+  async showAllFilmsInList(user_id, page = 1, pageSize = 10) {
     const listRepository = getRepository(listWatchRepository);
     const listRepositoryHasFilms = getRepository(listWatchRepositoryHasFilm);
     //pego a lista com base no id do usuario

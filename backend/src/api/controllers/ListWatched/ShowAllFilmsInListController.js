@@ -8,9 +8,10 @@ class ShowAllFilmsInListController {
   async handle(request, response) {
     try {
       const { id } = getUserAutenticated(request);
-      console.log("userId do controntroller", id);
+      const { page = 1, pageSize = 10 } = request.headers;
       const listOfFavoriteMovies = await this.showAllFilmsInListUseCase.execute(
-        id
+        id,
+        { page: Number(page), pageSize: Number(pageSize) }
       );
       return response.status(200).json({
         status: "ok",
