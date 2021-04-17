@@ -20,7 +20,6 @@
 > `npm start`
 
 
-
 ## Utils
 - Criando nova migration
 > `npm run migration:create <nome_da_migration>`

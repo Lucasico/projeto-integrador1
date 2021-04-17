@@ -26,7 +26,6 @@ class RemoveFilmListController {
       return response.status(removeFilm.statusCodeError || 200).json({
         status: "ok",
         message: "Filme removido com sucesso da sua lista de favoritos",
-        content: removeFilm,
       });
     } catch (error) {
       console.error("Error ao remover filme da lista => ", error);

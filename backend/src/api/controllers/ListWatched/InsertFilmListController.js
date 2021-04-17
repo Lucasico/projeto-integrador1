@@ -31,7 +31,7 @@ class InsertFilmListController {
       } else {
         const newList = await this.createNewListUseCase.execute({
           user_id: id,
-          name: `Lista do usuario ${name}`,
+          name: `Lista de filmes assistidos do usuario ${name}`,
         });
         const dataInsertInTheNewList = {
           list_watched_films_id: newList.id,
@@ -46,20 +46,20 @@ class InsertFilmListController {
         //console.log("list =>", listByUser);
         return response.status(200).json({
           status: "ok",
-          message: "Filme inserido na lista com sucesso",
+          message: "Filme inserido na lista de assistidos com sucesso",
           content: newAddFilList,
         });
       } else {
         return response.status(200).json({
           status: "ok",
-          message: "Este filme já se encontra na sua lista de favoritos",
+          message: "Este filme já se encontra na sua lista de assistidos",
         });
       }
     } catch (error) {
       console.error("Erro add film list =>", error);
       return response.status(500).json({
         status: "ERROR",
-        message: "Erro ao adicionar filme a lista de favoritos",
+        message: "Erro ao adicionar filme a lista de assistidos",
       });
     }
   }

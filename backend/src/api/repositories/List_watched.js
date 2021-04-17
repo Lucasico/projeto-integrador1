@@ -1,3 +1,4 @@
+const { verify } = require("jsonwebtoken");
 const { getRepository } = require("typeorm");
 const { apiError } = require("../../utils/apiError");
 const listWatchRepository = require("../entities/List_watched_film");
@@ -88,5 +89,18 @@ module.exports = {
       .getManyAndCount();
 
     return { listFavoriteMovies, quantity, currentPage: page };
+  },
+
+  async verifyFilmAlreadyExistIntTheList(list_watched_films_id, film_id) {
+    console.log(list_watched_films_id);
+    console.log(film_id);
+    const listRepository = getRepository(listWatchRepositoryHasFilm);
+    const filmAlreadyInsertInTheList = await listRepository.findOne({
+      where: {
+        list_watched_films_id: list_watched_films_id,
+        film_id: film_id,
+      },
+    });
+    return filmAlreadyInsertInTheList;
   },
 };

@@ -44,6 +44,19 @@ const {
 const {
   showAllFilmsInListController,
 } = require("./api/useCase/ListWatched/ShowAllFilmsInList");
+const {
+  insertFimllistFavoriteController,
+} = require("./api/useCase/ListFavorite/InsertFilmToList");
+const {
+  removeFimllistFavoriteController,
+} = require("./api/useCase/ListFavorite/RemoveFilmToList");
+const {
+  listFilmsListFavoriteController,
+} = require("./api/useCase/ListFavorite/ListFilmsListFavorite");
+
+const {
+  watchFavoriteFilmController,
+} = require("./api/useCase/ListFavorite/FilmToWatched");
 
 router.get("/health", (_, res) =>
   res.status(200).json({
@@ -196,6 +209,31 @@ router.get(
   `${ROUTESPATH.LISTWATCHED}`,
   auth,
   showAllFilmsInListController.handle.bind(showAllFilmsInListController)
+);
+
+//--listFavorites routes --//
+router.post(
+  `${ROUTESPATH.LISTFAVORITE}`,
+  auth,
+  insertFimllistFavoriteController.handle.bind(insertFimllistFavoriteController)
+);
+
+router.delete(
+  `${ROUTESPATH.LISTFAVORITE}`,
+  auth,
+  removeFimllistFavoriteController.handle.bind(removeFimllistFavoriteController)
+);
+
+router.get(
+  `${ROUTESPATH.LISTFAVORITE}`,
+  auth,
+  listFilmsListFavoriteController.handle.bind(listFilmsListFavoriteController)
+);
+
+router.put(
+  `${ROUTESPATH.LISTFAVORITE}`,
+  auth,
+  watchFavoriteFilmController.handle.bind(watchFavoriteFilmController)
 );
 
 module.exports = { router };

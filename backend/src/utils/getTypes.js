@@ -7,6 +7,7 @@ const ROUTESPATH = {
   GENRE: "/genres",
   INDICATECLASSIFICATION: "/indicates/classifications",
   LISTWATCHED: "/list/watched",
+  LISTFAVORITE: "/list/favorites",
 };
 
 module.exports = { ROUTESPATH };
