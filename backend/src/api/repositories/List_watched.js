@@ -141,4 +141,30 @@ module.exports = {
 
     return countFilmByGenre;
   },
+
+  async averageMinutesWatchedInRelationToGeneralAverage(user_id) {
+    const listRepository = getRepository(listWatchRepository);
+    const listWatchFilmsRepository = getRepository(listWatchRepositoryHasFilm);
+
+    const { id } = await listRepository.findOne({
+      where: { user_id },
+    });
+
+    const { averageUser } = await listWatchFilmsRepository
+      .createQueryBuilder("list_watched_has_films")
+      .select("AVG(films.duration)", "averageUser")
+      .leftJoin("list_watched_has_films.films", "films")
+      .where("list_watched_has_films.list_watched_films_id = :id", { id: id })
+      .getRawOne();
+
+    const {
+      averageGeneral,
+    } = await listWatchFilmsRepository
+      .createQueryBuilder("list_watched_has_films")
+      .select("AVG(films.duration)", "averageGeneral")
+      .leftJoin("list_watched_has_films.films", "films")
+      .getRawOne();
+
+    return { averageUser, averageGeneral };
+  },
 };

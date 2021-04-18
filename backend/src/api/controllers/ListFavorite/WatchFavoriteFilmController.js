@@ -34,7 +34,7 @@ class WatchFavoriteFilmController {
       if (filmToWatched.statusCodeError === 400) {
         return response.status(200).json({
           status: "ok",
-          message: "Erro ao modificar filme para assistido",
+          message: filmToWatched.message,
         });
       } else {
         /**
@@ -69,7 +69,6 @@ class WatchFavoriteFilmController {
         return response.status(200).json({
           status: "ok",
           message: "Filme modificado para assistido com sucesso!",
-          contente: filmToWatched,
         });
       }
     } catch (error) {

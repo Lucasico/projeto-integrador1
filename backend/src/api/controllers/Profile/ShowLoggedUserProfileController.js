@@ -5,10 +5,12 @@ class ShowLoggedUserProfileController {
     findByIdUserUseCase,
     totalMinutesWatchedUseCase,
     totalFilmsByGenreUseCase,
+    averageMinutesWatchedInRelationToGeneralAverageUseCase,
   }) {
     this.findByIdUserUseCase = findByIdUserUseCase;
     this.totalMinutesWatchedUseCase = totalMinutesWatchedUseCase;
     this.totalFilmsByGenreUseCase = totalFilmsByGenreUseCase;
+    this.averageMinutesWatchedInRelationToGeneralAverageUseCase = averageMinutesWatchedInRelationToGeneralAverageUseCase;
   }
   async handle(request, response) {
     try {
@@ -23,12 +25,23 @@ class ShowLoggedUserProfileController {
       const totalFilmsByGenre = await this.totalFilmsByGenreUseCase.execute({
         id,
       });
+      const averageMinutesWatchedInRelationToGeneralAverage = await this.averageMinutesWatchedInRelationToGeneralAverageUseCase.execute(
+        { id }
+      );
+      const { averageUser } = averageMinutesWatchedInRelationToGeneralAverage;
+      const {
+        averageGeneral,
+      } = averageMinutesWatchedInRelationToGeneralAverage;
+      const relationAverage = averageUser - averageGeneral;
 
       responseData = {
         user,
-        totalMinutesWatched,
         totalFilmsByGenre,
+        totalMinutesWatched,
+        averageMinutesWatchedInRelationToGeneralAverage,
+        relationAverage,
       };
+
       return response.status(200).json({
         status: "OK",
         message: "Usuario recuperado com sucesso",
