@@ -1,4 +1,3 @@
-const { verify } = require("jsonwebtoken");
 const { getRepository } = require("typeorm");
 const { apiError } = require("../../utils/apiError");
 const listWatchRepository = require("../entities/List_watched_film");
@@ -102,5 +101,44 @@ module.exports = {
       },
     });
     return filmAlreadyInsertInTheList;
+  },
+
+  async totalMinutesWatched(user_id) {
+    const listRepository = getRepository(listWatchRepository);
+    const listWatchFilmsRepository = getRepository(listWatchRepositoryHasFilm);
+
+    const { id } = await listRepository.findOne({
+      where: { user_id },
+    });
+
+    const { sum } = await listWatchFilmsRepository
+      .createQueryBuilder("list_watched_has_films")
+      .select("SUM(films.duration)", "sum")
+      .leftJoin("list_watched_has_films.films", "films")
+      .where("list_watched_has_films.list_watched_films_id = :id", { id: id })
+      .getRawOne();
+
+    return sum;
+  },
+
+  async totalFilmsByGenre(user_id) {
+    const listRepository = getRepository(listWatchRepository);
+    const listWatchFilmsRepository = getRepository(listWatchRepositoryHasFilm);
+
+    const { id } = await listRepository.findOne({
+      where: { user_id },
+    });
+
+    const countFilmByGenre = await listWatchFilmsRepository
+      .createQueryBuilder("list_watched_has_films")
+      .select("genre.name")
+      .addSelect("COUNT(films.genre)", "count")
+      .leftJoin("list_watched_has_films.films", "films")
+      .leftJoin("films.genre", "genre")
+      .where("list_watched_has_films.list_watched_films_id = :id", { id: id })
+      .groupBy("genre.name")
+      .getRawMany();
+
+    return countFilmByGenre;
   },
 };

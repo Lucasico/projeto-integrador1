@@ -53,10 +53,12 @@ const {
 const {
   listFilmsListFavoriteController,
 } = require("./api/useCase/ListFavorite/ListFilmsListFavorite");
-
 const {
   watchFavoriteFilmController,
 } = require("./api/useCase/ListFavorite/FilmToWatched");
+const {
+  showLoggedUserProfileController,
+} = require("./api/useCase/Profile/ShowLoggedUserProfile");
 
 router.get("/health", (_, res) =>
   res.status(200).json({
@@ -234,6 +236,13 @@ router.put(
   `${ROUTESPATH.LISTFAVORITE}`,
   auth,
   watchFavoriteFilmController.handle.bind(watchFavoriteFilmController)
+);
+
+//--profile routes --//
+router.get(
+  `${ROUTESPATH.PROFILE}`,
+  auth,
+  showLoggedUserProfileController.handle.bind(showLoggedUserProfileController)
 );
 
 module.exports = { router };

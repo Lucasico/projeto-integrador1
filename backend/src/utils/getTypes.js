@@ -8,6 +8,7 @@ const ROUTESPATH = {
   INDICATECLASSIFICATION: "/indicates/classifications",
   LISTWATCHED: "/list/watched",
   LISTFAVORITE: "/list/favorites",
+  PROFILE: "/profiles/user",
 };
 
 module.exports = { ROUTESPATH };
