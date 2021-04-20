@@ -1,8 +1,4 @@
-/**
- * pega o id do filme
- * modificar para assistindo
- * inserir na lista de assistidos, caso não tenha a lista criada, necessario cria-la e inserir
- */
+
 const { getUserAutenticated } = require("../../../utils/getUserAutenticated");
 class WatchFavoriteFilmController {
   constructor({
@@ -37,11 +33,6 @@ class WatchFavoriteFilmController {
           message: filmToWatched.message,
         });
       } else {
-        /**
-         * 1 - verificar se a lista de assistidos desse usuario existe
-         * 2 - caso exista no inserir
-         * 3 - caso não exista cria e inseri
-         */
         const listByUser = await this.checkListAlreadyExistsUseCase.execute({
           id,
         });
