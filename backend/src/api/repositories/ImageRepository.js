@@ -10,7 +10,7 @@ module.exports = {
     const PATH = `25.60.179.252`;
     const imageRepository = getRepository(Image);
     const submitData = {
-      path: `http://${PATH}:${PORT}${pathUploadsFolder}/${nameImage}`,
+      path: `http://${pathUploads}:${PORT}${pathUploadsFolder}/${nameImage}`,
     };
     const newImage = await imageRepository.save(submitData);
     return newImage;
