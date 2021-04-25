@@ -6,7 +6,7 @@ class ListGenreController {
   async handle(request, response) {
     try {
       const res = await this.listGenreUseCase.execute();
-
+      console.log("res", res);
       return response.status(200).json({
         status: "OK",
         message: "Generos encontradas com sucesso",
