@@ -19,7 +19,9 @@
             </button>
           </div>
           <div class="lineInformations">
-
+            <div class="indication">
+              {{ item.indicate_classification.name }}
+            </div>
           </div>
         </div>
 
@@ -133,8 +135,8 @@ h4 {
 }
 
 .btnActionAdd {
-  height: 25px;
-  width: 30px;
+  height: 23px;
+  width: 28px;
   background:#442868;
   display: flex;
   align-items: center;
