@@ -8,7 +8,7 @@
     "port": 5432,
     "database": "projeto-integrador",
     "username": "postgres",
-    "password": "Postgres2018!"
+    "password": "postgres"
   },
   "jwtSecret": "l*7h*/$%Aasd7h1#@h12hj7Qj12"
 }
