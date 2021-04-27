@@ -17,7 +17,8 @@ class CreateFilmController {
         body: request.body,
         path: request.file ? request.file.filename : "",
       };
-
+      console.log('dados que chegam', data);
+      console.log(request.file);
       await schemaCreateFilm.validate(data.body, {
         abortEarly: false,
       });
