@@ -60,6 +60,8 @@ const {
   showLoggedUserProfileController,
 } = require("./api/useCase/Profile/ShowLoggedUserProfile");
 
+const { listStateAllController } = require("./api/useCase/State/ListStateAll");
+
 router.get("/health", (_, res) =>
   res.status(200).json({
     serverStatus: "server up",
@@ -73,6 +75,12 @@ router.post(
 );
 
 //--state routes--//
+router.get(
+  `${ROUTESPATH.STATES}`,
+  auth,
+  listStateAllController.handle.bind(listStateAllController)
+);
+
 router.post(
   `${ROUTESPATH.STATES}`,
   auth,
@@ -181,7 +189,7 @@ router.get(
 );
 
 router.get(
-  `${ROUTESPATH.FILMS}${ROUTESPATH.GENRE}/:genre`,
+  `${ROUTESPATH.FILMS}${ROUTESPATH.GENRE}`,
   auth,
   showAllFilmByGenresController.handle.bind(showAllFilmByGenresController)
 );

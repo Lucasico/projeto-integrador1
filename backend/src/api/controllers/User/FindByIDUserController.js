@@ -7,7 +7,6 @@ class FindByIdUserController {
     try {
       const idString = request.params.id;
       const id = parseInt(idString);
-      console.log("id que vai pro useCase", id);
       const res = await this.findByIdUserUseCase.execute({
         id,
       });

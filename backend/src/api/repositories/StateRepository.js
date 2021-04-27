@@ -9,6 +9,12 @@ module.exports = {
     return newState;
   },
 
+  async listStateAll() {
+    const stateRepository = getRepository(State);
+    const states = await stateRepository.find();
+    return states;
+  },
+
   async listCityByState(id) {
     const cityRepository = getRepository(City);
     const cities = await cityRepository

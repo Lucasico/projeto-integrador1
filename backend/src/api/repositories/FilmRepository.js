@@ -107,6 +107,7 @@ module.exports = {
   },
 
   async showFilmsByGenres({ page = 1, pageSize = 10, genreId }) {
+    console.log("page", page, "pagesize", pageSize, "genreid", genreId);
     //receber a id referente ao tipo
     const filmRepository = getRepository(Film);
     const offset = (page - 1) * pageSize;
