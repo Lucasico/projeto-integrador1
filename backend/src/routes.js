@@ -189,7 +189,7 @@ router.get(
 );
 
 router.get(
-  `${ROUTESPATH.FILMS}${ROUTESPATH.GENRE}`,
+  `${ROUTESPATH.FILMS}${ROUTESPATH.GENRE}/all`,
   auth,
   showAllFilmByGenresController.handle.bind(showAllFilmByGenresController)
 );

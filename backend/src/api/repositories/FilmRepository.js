@@ -107,31 +107,7 @@ module.exports = {
   },
 
   async showFilmsByGenres({ page = 1, pageSize = 10, genreId }) {
-    console.log("page", page, "pagesize", pageSize, "genreid", genreId);
-    //receber a id referente ao tipo
-    const filmRepository = getRepository(Film);
-    const offset = (page - 1) * pageSize;
-    const [filmList, quantity] = await filmRepository
-      .createQueryBuilder("films")
-      .select([
-        "films.id",
-        "films.name",
-        "films.indicate_classifications_id",
-        "films.genre_id",
-        "films.images_id",
-      ])
-      .leftJoinAndSelect("films.image", "image")
-      .leftJoinAndSelect(
-        "films.indicate_classification",
-        "indicate_classification"
-      )
-      .where("films.genre_id = :genre", { genre: `${genreId || ""}` })
-      .take(pageSize)
-      .skip(offset)
-      .orderBy("films.name", "ASC")
-      .getManyAndCount();
-
-    return { filmList, quantity, currentPage: page };
+    return { data: "dados" };
   },
 
   async filterFilmsByNameAndGenreAndindicateClassification({
@@ -149,6 +125,8 @@ module.exports = {
         "films.indicate_classifications_id",
         "films.genre_id",
         "films.images_id",
+        "films.synopsis",
+        "films.duration",
       ])
       .leftJoinAndSelect("films.genre", "genre")
       .leftJoinAndSelect("films.image", "image")

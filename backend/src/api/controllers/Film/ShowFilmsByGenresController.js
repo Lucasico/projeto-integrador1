@@ -6,9 +6,7 @@ class ShowAllFilmByGenresController {
   async handle(request, response) {
     try {
       const { page = 1, pagesize = 10, genreid = "" } = request.headers;
-      console.log("page", page);
-      console.log("pagesize", pagesize);
-      console.log("genre", genreid);
+
       const filmList = await this.showFilmByGenresUseCase.execute({
         page: Number(page),
         pageSize: Number(pagesize),
