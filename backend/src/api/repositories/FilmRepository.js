@@ -127,6 +127,7 @@ module.exports = {
         "films.images_id",
         "films.synopsis",
         "films.duration",
+        "films.date_release",
       ])
       .leftJoinAndSelect("films.genre", "genre")
       .leftJoinAndSelect("films.image", "image")
