@@ -19,28 +19,29 @@
             </div>
             <div class="columnInputs">
                 <!-- values from classification indication-->
-                <select v-model="dataRegister.type">
+                <select v-model="idstate" @change="loadCitys(idstate)">
                     <option value="" disabled selected>
-                        Selecione um tipo
+                        Selecione um estado
                     </option>
                     <option 
-                        v-for="types in valuesTypes" 
-                        :key="types.id"
-                        :value="types.id">
-                        {{ types.name }}
+                        v-for="states in valuesStates" 
+                        :key="states.id"
+                        :value="states.id">
+                        {{ states.name }}
                     </option>
                 </select>
                 <!-- values from genres-->
-                <select v-model="dataRegister.valuesStates">
+                <select v-model="dataRegister.city">
                     <option value="" disabled selected>
-                        Selecione uma estado
+                        Selecione uma cidade
                     </option>
-                    <!-- <option v-for="item in valuesRequests.genre" 
-                        :key="item.id"
-                        :value="item.id">
-                        {{ item.name }}
-                    </option> -->
+                    <option v-for="city in valuesCitys" 
+                        :key="city.id"
+                        :value="city.id">
+                        {{ city.name }}
+                    </option>
                 </select>
+                <input type="password" v-model="dataRegister.password" placeholder="Senha" />
             </div>
             <button class="btnAddfilm" type="submit" @click="registerNewUser">
                 Enviar
@@ -54,8 +55,9 @@ import styled from 'vue-styled-components';
 
 export const Container = styled.div`
     width: 100%;
-    height: auto;
-    margin-top: 60px;
+    height: 100vh;
+    background: #393939;
+    padding-top: 60px;
     display: flex;
     justify-content: center;
 `;
@@ -67,7 +69,10 @@ export default {
        return {
         valuesTypes: null,
         valuesStates: null,
+        valuesCitys: null, 
+        idstate: '',
         dataRegister: {
+            password: '',
             type: '',
             city: '',
             nome: '',
@@ -83,15 +88,62 @@ export default {
         })
         .then((response) => {
           this.valuesTypes = response.data.content;
-          console.log(response);
         })
         .catch((erro) => {
-          console.log(erro);
+          this.makeToast('danger', erro.response.data.message);
+    });
+    this.$http
+     .get("states", {
+        headers: { Authorization: this.$store.getters.getToken },
+        })
+        .then((response) => {
+          this.valuesStates = response.data.content;
+        })
+        .catch((erro) => {
+          this.makeToast('danger', erro.response.data.message);
     });
    },
    methods: {
-       registerNewUser(){
-    
+        makeToast(variant = null, data) {
+            this.$bvToast.toast(data, {
+            variant: variant,
+            solid: true
+            })
+        },
+
+       registerNewUser(e){  
+           e.preventDefault() 
+        this.$http
+            .post("users", {
+                    name: this.dataRegister.nome,
+                    email: this.dataRegister.email,
+                    telephone: this.dataRegister.telephone,
+                    password: this.dataRegister.password,
+                    type_id: this.dataRegister.type,
+                    city_id: this.dataRegister.city,
+                }, {
+                    headers: { Authorization: this.$store.getters.getToken },
+                })
+                .then((response) => {
+                    this.makeToast('success', response.data.message);
+                    this.$router.push("/Home");
+                })
+                .catch((erro) => {
+                    this.makeToast('danger', erro.response.data.message);
+            });
+       },
+
+       loadCitys(id){
+           this.$http
+            .get(`states/${id}`, {
+                headers: { Authorization: this.$store.getters.getToken },
+            })
+            .then((response) => {
+                this.valuesCitys = response.data.content;
+            })
+            .catch((erro) => {
+                 this.makeToast('danger', erro.response.data.message);
+        });
        }
    }
 }
@@ -107,6 +159,7 @@ form {
     display: flex;
     justify-content: space-around;
     width: 500px;
+    height: 200px;
     flex-wrap: wrap;
 }
 

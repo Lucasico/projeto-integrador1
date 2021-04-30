@@ -1,33 +1,36 @@
 <template>
-  <div class="Head">
+  <div class="Head" v-if="this.$store.getters.getToken">
     <div class="Logo"></div>
     <ul>
-      <li
-        @click="navigation('Home')"
-        v-bind:style="path == '/Home' ? styleSelectMenu : ''"
-        >
-        Home
-      </li>
-      <li
-        @click="navigation('List')"
-        v-bind:style="path == '/List' ? styleSelectMenu : ''"
-        >
-        Sua Lista
-      </li>
-      <li
-        @click="navigation('Users')"
-        v-bind:style="path == '/Users' ? styleSelectMenu : ''"
-        >
-        Usuários
-      </li>
-      <li
-        @click="navigation('Favorites')"
-        v-bind:style="path == '/Favorites' ? styleSelectMenu : ''"
-        >
-        Favoritos
-      </li>
+      <router-link class="rt" to="/Home">
+        <li>
+            Home
+        </li>
+      </router-link>
+      <router-link class="rt" to="/List">
+        <li>
+           Sua Lista
+        </li>
+      </router-link>
+      <router-link v-if="this.$store.getters.getUserType == 1" class="rt" to="/Users">
+        <li>
+            Usuários
+        </li>
+      </router-link>
+      <router-link class="rt" to="/Favorites">
+        <li>
+            Favoritos
+        </li>
+      </router-link>
     </ul>
-    <div class="profile" />
+    <button class="profile" @click="sair()">
+      <v-icon 
+          medium 
+          color="#fff" 
+          aria-hidden="false">
+            mdi-logout-variant
+        </v-icon>
+    </button>
   </div>
 </template>
 
@@ -36,7 +39,8 @@ export default {
   components: {},
   data() {
     return {
-      path: window.location.pathname,
+      path: null,
+      teste: window.location.pathname,
       styleSelectMenu: {
         background: "#46296c",
         color: "#fff",
@@ -44,18 +48,11 @@ export default {
     };
   },
   methods: {
-    navigation(value) {
-      console.log(this.$route);
-      if (value == "Home") {
-        this.$router.push("/Home");
-      } else if (value == "List") {
-        this.$router.push("/List");
-      } else if (value == "Users") {
-        this.$router.push("/Users");
-      } else if (value == "Favorites") {
-        this.$router.push("/Favorites");
-      }
-    },
+    sair() {
+        this.$store.commit('setToken', null);
+        sessionStorage.clear();
+        this.$router.push('/')
+    }
   },
 };
 </script>
@@ -68,6 +65,10 @@ export default {
   width: 100%;
   position: fixed;
   z-index: 5;
+}
+
+.rt:hover {
+  text-decoration: none;
 }
 
 ul {
@@ -105,9 +106,17 @@ ul li:hover {
 .profile {
   background: #525252;
   height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 40px;
+  margin-top: 5px;
   border-radius: 50%;
   margin-left: auto;
   margin-right: 20px;
+}
+
+.profile:focus {
+  outline: none;
 }
 </style>

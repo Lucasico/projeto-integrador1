@@ -8,24 +8,22 @@
             </div>
             <div class="columnInputs">
                 <!-- values from classification indication-->
-                <select v-model="dataUpdate.city.name">
-                    <option value="" disabled selected>
-                        Selecione uma cidade
-                    </option>
-                    <option :value="dataUpdate.city.id">
-                        {{ dataUpdate.city.name }}
+                <select v-model="dataUpdate.city.state" @change="loadCitys(dataUpdate.city.state)">
+                    <option 
+                        v-for="states in valuesStates" 
+                        :key="states.id"
+                        :value="dataUpdate.city.state">
+                        {{ states.name }}
                     </option>
                 </select>
                 <!-- values from genres-->
-                <select v-model="dataUpdate.city.name">
-                    <option value="" disabled selected>
-                        Selecione um estado
+                <select v-model="dataUpdate.city.id">
+                    <option 
+                        v-for="citys in valuesCitys" 
+                        :key="citys.id"
+                        :value="dataUpdate.city.id">
+                        {{ citys.name }}
                     </option>
-                    <!-- <option v-for="item in valuesRequests.genre" 
-                        :key="item.id"
-                        :value="item.id">
-                        {{ item.name }}
-                    </option> -->
                 </select>
             </div>
             <button class="btnAddfilm" type="submit" @click="updadeUser">
@@ -40,8 +38,9 @@ import styled from 'vue-styled-components';
 
 export const Container = styled.div`
     width: 100%;
-    height: auto;
-    margin-top: 60px;
+    height: 100vh;
+    padding-top: 60px;
+    background: #393939;
     display: flex;
     justify-content: center;
 `;
@@ -52,6 +51,9 @@ export default {
    data() {
        return {
         valuesUpdate: [],
+        valuesStates: null,
+        iduser: '',
+        valuesCitys: null,
         dataUpdate: {
             type: { name: '', id: ''},
             city: { id: '', state: '', name: ''},
@@ -61,53 +63,70 @@ export default {
         }
        }
    },
-   watch: {
-       'data.lancamento'(newValue, oldValue){
-        this.lancamento = newValue.replace(/(\d{2})?(\d{2})?(\d{4})/);
-        console.log(newValue.replace(/(\d{3})?(\d{3})?(\d{3})?(\d{2})/, "$1.$2.$3-$4"));
-       }
-   },
    created() {
-            this.dataUpdate.nome = this.$store.getters.getUser.name;
-            this.dataUpdate.id = this.$store.getters.getUser.id;
-            this.dataUpdate.email = this.$store.getters.getUser.email;
-            this.dataUpdate.telephone = this.$store.getters.getUser.telephone;
-            this.dataUpdate.type.id = this.$store.getters.getUser.type.id; 
-            this.dataUpdate.type.name = this.$store.getters.getUser.type.name; 
-            this.dataUpdate.city.id = this.$store.getters.getUser.city.id; 
-            this.dataUpdate.city.name = this.$store.getters.getUser.city.name.id; 
-            this.dataUpdate.city.state = this.$store.getters.getUser.city.state_id;
-    this.loadValuesIputs();
-    this.$http
-      .get("/indicates/classifications", {
-        headers: { Authorization: this.$store.getters.getToken },
-        })
-        .then((response) => {
-          this.valuesRequests.indication = response.data.content;
-        })
-        .catch((erro) => {
-          console.log(erro);
-    });
-    this.$http
-      .get("/genres", {
-        headers: { Authorization: this.$store.getters.getToken },
-        })
-        .then((response) => {
-          this.valuesRequests.genre = response.data.content;
-          console.log(response);
-        })
-        .catch((erro) => {
-          console.log(erro);
-    });
-   },
-   methods: {
-       laodImage(e){
-           let teste = document.querySelector('body #file').files[0].path;
-           this.data.image = e.target.files[0];
-           console.log(e.target.files[0]);
+        this.dataUpdate.nome = this.$store.getters.getUser.name;
+        this.iduser = this.$store.getters.getUser.id;
+        this.dataUpdate.email = this.$store.getters.getUser.email;
+        this.dataUpdate.telephone = this.$store.getters.getUser.telephone;
+        this.dataUpdate.type.id = this.$store.getters.getUser.type.id; 
+        this.dataUpdate.type.name = this.$store.getters.getUser.type.name; 
+        this.dataUpdate.city.id = this.$store.getters.getUser.city.id; 
+        this.dataUpdate.city.name = this.$store.getters.getUser.city.name; 
+        this.dataUpdate.city.state = this.$store.getters.getUser.city.state_id;
+
+        this.loadCitys(this.dataUpdate.city.state);
+
+        this.$http
+            .get("states", {
+                headers: { Authorization: this.$store.getters.getToken },
+                })
+                .then((response) => {
+                this.valuesStates = response.data.content;
+                })
+                .catch((erro) => {
+                this.makeToast('danger', erro.response.data.message);
+            });
+    },
+
+    methods: {
+        makeToast(variant = null, data) {
+            this.$bvToast.toast(data, {
+            variant: variant,
+            solid: true
+            })
+        },
+
+        loadCitys(id){
+            this.$http
+                .get(`states/${id}`, {
+                    headers: { Authorization: this.$store.getters.getToken },
+                })
+                .then((response) => {
+                    this.valuesCitys = response.data.content;
+                })
+                .catch((erro) => {
+                    this.makeToast('danger', erro.response.data.message);
+            });
        },
-       updadeUser(){
-    
+       updadeUser(e){
+           e.preventDefault()
+             this.$http
+                .put(`users/${this.iduser}`, {
+                    name: this.dataUpdate.nome,
+                    email: this.dataUpdate.email,
+                    telephone: this.dataUpdate.telephone,
+                    city_id: this.dataUpdate.city.id,
+                    type_id: this.dataUpdate.type.id,
+                }, {
+                    headers: { Authorization: this.$store.getters.getToken },
+                })
+                .then((response) => {
+                   this.makeToast('success', response.data.message);
+                   this.$router.push("/Home");
+                })
+                .catch((erro) => {
+                    this.makeToast('danger', erro.response.data.message);
+            });
        }
    }
 }
@@ -123,6 +142,7 @@ form {
     display: flex;
     justify-content: space-around;
     width: 500px;
+    height: 200px;
     flex-wrap: wrap;
 }
 

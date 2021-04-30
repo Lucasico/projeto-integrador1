@@ -1,55 +1,58 @@
 <template>
   <div class="containerHome">
-    <button class="btnAddFilm" @click="redirectAddNewFilm()">
+    <button v-if="this.$store.getters.getUserType == 1" class="btnAddFilm" @click="redirectAddNewFilm()">
         <v-icon 
-          class="btnInformations" 
           medium 
           color="#fff" 
           aria-hidden="false">
             mdi-movie-plus
         </v-icon>
     </button>
-    <div class="contentItems" v-for="genres in filmGenre" :key="genres.id">
+    <!-- <div class="contentItems"> -->
 
-      <div class="filmlist">
-        <!-- <ContentFilm 
-          v-for="film in listFilms" 
-          :key="film.title"
-          class="filme"
-          @mouseover="modifySize(true, film.id)"
-          @mouseleave="modifySize(false, film.id)">
-          <div v-if="genres.id == film.genre_id">
-            <Imagem :src="film.image.path" />
-            <div 
-              v-if="selectFrame.select == true 
-              && selectFrame.id == film.id" 
-              class="actionsFilm">
-              <div class="lineActions">
-                <h4 class="selectTitle">{{ film.name }}</h4>
-                <v-icon class="btnInformations" 
-                  medium color="#525252" 
-                  aria-hidden="false">mdi-help-circle
-                </v-icon>
-                <button class="btnActionAdd">
-                  <v-icon color="#fff" aria-hidden="false">mdi-playlist-plus</v-icon>
-                </button>
-              </div>
-              <div class="lineInformations">
-                <div class="indication">
-                  {{ film.indicate_classification.name}} 
+        <FilmList>
+          <ContentFilm 
+            v-for="film in listFilms" 
+            :key="film.title"
+            class="filme"
+            @mouseover="modifySize(true, film.id)"
+            @mouseleave="modifySize(false, film.id)">
+              <Imagem :src="film.image.path" />
+              <div 
+                v-if="selectFrame.select == true 
+                && selectFrame.id == film.id" 
+                class="actionsFilm">
+                <div class="lineActions">
+                  <h4 class="selectTitle">{{ film.name }}</h4>
+                  <v-icon class="btnInformations" 
+                    medium color="#525252" 
+                    aria-hidden="false"
+                    @click="redirectInformations(film)">
+                    mdi-help-circle
+                  </v-icon>
+                  <button class="btnActionAdd">
+                    <v-icon color="#fff"
+                     aria-hidden="false"
+                     @click="addFilmList(film.id)">
+                      mdi-playlist-plus
+                     </v-icon>
+                  </button>
                 </div>
-                <span>{{ film.duration }} min</span>
-                <span>{{ film.genre.name }}</span>
+                <div class="lineInformations">
+                  <div class="indication">
+                    {{ film.indicate_classification.name}} 
+                  </div>
+                  <span>{{ film.duration.replace('.', ':') }} min</span>
+                  <span>{{ film.genre.name }}</span>
+                </div>
               </div>
-            </div>
-            <div v-else class="title">
-              <h4>{{ film.name }}</h4>
-            </div>
-            </div>
-        </ContentFilm> -->
+              <div v-else class="title">
+                <h4>{{ film.name }}</h4>
+              </div>
+          </ContentFilm>
+        </FilmList>
 
-      </div>
-    </div>
+      <!-- </div> -->
   </div>
 </template>
 <script>
@@ -71,7 +74,7 @@ export const Imagem = styled.img`
 `;
 
 export const ContentFilm = styled.div`
-  margin: 10px 10px 0 10px;
+  margin: 10px 10px 10px 10px;
   background: #525252;
   width: 238px;
   height: 150px;
@@ -82,10 +85,26 @@ export const ContentFilm = styled.div`
     -webkit-transform: scale(1.1);
 	  transform: scale(1.1);
   }
+
+`;
+
+export const FilmList = styled.div`
+  display: flex;
+  margin: 20px 0 0 0;
+  flex-wrap: wrap;
+  height: auto;
+  width: 100%;
+  padding-left: 10px;
+  padding-bottom: 80px;
+  background: #393939;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export default {
-  components: { Imagem, ContentFilm },
+  components: { Imagem, ContentFilm, FilmList },
   computed: {},
   data() {
     return {
@@ -103,52 +122,45 @@ export default {
       this.selectFrame.select = value
       this.selectFrame.id = id;
     },
+
+    redirectInformations(values){
+      this.$store.commit("setInformations", values);
+      this.$router.push("/Informations");
+    },
+
     redirectAddNewFilm(){
       this.$router.push("/NewFilm");
-    }
-  },
-  // watch: {
-  //   filmGenre: function(newValue, oldValue){
-  //       newValue.map(item => {
-  //       this.$http.get(`films/genres/${item.id}`, {
-  //         headers: { Authorization: this.$store.getters.getToken },
-  //         })
-  //         .then((response) => {
-  //           if(response.data.content.filmList.length){
-              
-  //           }
-  //           this.listFilms = response.data.content.filmList;
-  //           console.log("acreditttaa", response);
-  //           console.log("ererrrere", this.listFilms);
-  //         })
-  //         .catch((erro) => {
-  //           console.log(erro);
-  //         }); 
-  //       })
-  //   }, 
-  // },
-  created() {
-     //get genres for films
-    this.$http
-      .get("genres", {
-        headers: { Authorization: this.$store.getters.getToken },
+    },
+    makeToast(variant = null, data) {
+        this.$bvToast.toast(data, {
+          variant: variant,
+          solid: true
+        })
+    },
+
+    addFilmList(id){
+     this.$http
+        .post('list/watched', { film_id: id }, {
+            headers: { Authorization: this.$store.getters.getToken },
         })
         .then((response) => {
-          this.filmGenre = response.data.content;
+            this.makeToast('success', response.data.message);
         })
         .catch((erro) => {
-          console.log(erro);
-    });
+             this.makeToast('danger', erro.response.data.message);
+        });
+    },
+  },
+  created() {
     this.$http
-      .get(`films/genres/${7}`, {
+      .get(`filter/films`, {
         headers: { Authorization: this.$store.getters.getToken },
         })
         .then((response) => {
           this.listFilms = response.data.content.filmList;
-          console.log(response);
         })
         .catch((erro) => {
-          console.log(erro);
+          this.makeToast('danger', erro.response.data.message);
     });
   },
 };
@@ -157,23 +169,39 @@ export default {
 <style scoped>
 .containerHome {
   width: 100%;
-  height: auto;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin-top: 60px;
+  padding-top: 60px;
+  background: #393939;
+}
+
+.btnInformations {
+  margin-left: auto;
+  margin-right: 10px;
 }
 
 .title {
   width: 100%;
   height: 30px;
-  margin-top: -33px;
+  margin-top: -30px;
   background: black;
   opacity: 70%;
   border-radius: 0 0 8px 8px;
   display: flex;
   justify-content: flex-start;
   padding: 5px;
+}
+
+.contentListGenre {
+  display: flex;
+  flex-direction: column;
+  background: red;
+  border: 1px solid blue;
+}
+
+.contentListGenre + .contentListGenre {
+  margin-top: -80px;
 }
 
 .indication {
@@ -201,6 +229,7 @@ h3 {
   color: #fff;
   position: fixed;
   top: 70px;
+  z-index: 9;
   right: 20px;
 }
 
@@ -216,6 +245,7 @@ h3 {
 
 h4 {
   color: #fff;
+  font-size: 16px;
 }
 
 .lineInformations {
@@ -225,15 +255,15 @@ h4 {
   justify-content: space-between;
 }
 
-.filmlist {
-  display: flex;
-  flex-direction: row;
-  height: auto;
+.actionsFilm {
+  margin-top: -4px;
+  height: 65px;
   width: 100%;
-  background: red;
+  background: #CBCBCB;
+  border-radius: 0 0 8px 8px;
 }
 
-.contentItems {
+/* .contentItems {
   width: 96%;
   height: 270px;
   overflow-y: hidden;
@@ -241,11 +271,7 @@ h4 {
   display: flex;
   flex-direction: column;
   padding: 10px;
-}
-
-.contentItems::-webkit-scrollbar {
-  display: none;
-}
+} */
 
 .btnActionAdd {
   height: 27px;
@@ -271,12 +297,4 @@ h4 {
   padding-top: 5px;
 }
 
-
-.actionsFilm {
-  margin-top: -4px;
-  height: 65px;
-  width: 100%;
-  background: #cbcbcb;
-  border-radius: 0 0 8px 8px;
-}
 </style>

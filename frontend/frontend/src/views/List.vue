@@ -1,5 +1,6 @@
 <template>
     <div class="containerList">
+    <FilmList>
     <ContentFilm 
           v-for="film in this.$store.getters.getListFilmes" 
           :key="film.films.id"
@@ -7,6 +8,7 @@
           @mouseover="modifySize(true, film.films.id)"
           @mouseleave="modifySize(false, film.films.id)">
           <div>
+            
             <Imagem :src="film.films.image.path" />
             <div 
               v-if="selectFrame.select == true 
@@ -16,7 +18,9 @@
                 <h4 class="selectTitle">{{ film.films.name }}</h4>
                 <v-icon class="btnInformations" 
                   medium color="#525252" 
-                  aria-hidden="false">mdi-help-circle
+                  aria-hidden="false"
+                  @click="redirectInformations(film.films)">
+                  mdi-help-circle
                 </v-icon>
                 <button class="btnActionAdd" @click="removeFilme(film.films.id)">
                   <v-icon color="#fff" aria-hidden="false">mdi-playlist-remove</v-icon>
@@ -27,6 +31,9 @@
                   {{ film.films.indicate_classification.name}} 
                 </div>
                 <span>{{ film.films.duration }} min</span>
+                <v-icon color="#DFA40D" @click="addFavorites(film.films.id)" aria-hidden="false">
+                  mdi-star-plus
+                </v-icon>
               </div>
             </div>
             <div v-else class="title">
@@ -34,6 +41,7 @@
             </div>
             </div>
         </ContentFilm>
+        </FilmList>
     </div>
 </template>
 
@@ -55,8 +63,23 @@ export const Imagem = styled.img`
   }
 `;
 
+export const FilmList = styled.div`
+  display: flex;
+  margin: 20px 0 0 0;
+  flex-wrap: wrap;
+  height: auto;
+  width: 100%;
+  padding-left: 10px;
+  padding-bottom: 80px;
+  background: #393939;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  `;
+
 export const ContentFilm = styled.div`
-  margin: 10px 10px 0 10px;    
+  margin: 10px 10px 0 17px;    
   background: #525252;
   width: 238px;
   height: 150px;               
@@ -71,7 +94,7 @@ export const ContentFilm = styled.div`
 
 export default {
   components: {
-    Imagem, ContentFilm
+    Imagem, ContentFilm, FilmList
   },
   data() {
     return {
@@ -92,13 +115,36 @@ export default {
         .then((response) => {
           this.listFilms = response.data.content.listFavoriteMovies;
           this.$store.commit("setListFilmes", response.data.content.listFavoriteMovies);
-          console.log('lista vuex', this.$store.getters.getListFilmes);
         })
         .catch((erro) => {
-          console.log(erro);
+          this.makeToast('danger', erro.response.data.message);
     });
   },
   methods: {
+    makeToast(variant = null, data) {
+        this.$bvToast.toast(data, {
+          variant: variant,
+          solid: true
+        })
+    },
+
+    redirectInformations(values){
+      this.$store.commit("setInformations", values);
+      this.$router.push("/Informations");
+    },
+
+    addFavorites(id){
+        this.$http
+            .post(`list/favorites`, { film_id: id }, {
+                headers: { Authorization: this.$store.getters.getToken },
+            })
+            .then((response) => {
+                this.makeToast('success', response.data.message);
+            })
+            .catch((erro) => {
+                this.makeToast('danger', erro.response.data.message);
+        });
+    },
     modifySize(value, id){
       this.selectFrame.select = value
       this.selectFrame.id = id;
@@ -113,6 +159,7 @@ export default {
           }
        })
         .then((response) => {
+            this.makeToast('success', response.data.message);
             this.$http
               .get(`list/watched`, {
                   headers: { Authorization: this.$store.getters.getToken },
@@ -122,11 +169,11 @@ export default {
                   this.$store.commit("setListFilmes", response.data.content.listFavoriteMovies);
                 })
                 .catch((erro) => {
-                  console.log(erro);
+                  this.makeToast('danger', erro.response.data.message);
               });
         })
         .catch((erro) => {
-          console.log(erro);
+          this.makeToast('danger', erro.response.data.message);
       });
     }
   }
@@ -137,17 +184,18 @@ export default {
 
 .containerList {
   width: 100%;
-  height: auto;
+  height: 100vh;
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
-  margin-top: 60px;
+  background: #393939;
+  padding-top: 60px;
 }
 
 .title {
   width: 100%;
   height: 30px;
-  margin-top: -31px;
+  margin-top: -30px;
   background: black;
   opacity: 70%;
   border-radius: 0 0 8px 8px;
@@ -192,10 +240,15 @@ h3 {
 .selectTitle {
   color: black;
   margin-left: 10px;
+  white-space: nowrap; 
+  width: 100px; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
 }
 
 h4 {
   color: #fff;
+  font-size: 17px;
 }
 
 .lineInformations {

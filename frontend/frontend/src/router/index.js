@@ -8,6 +8,7 @@ import RegisterFilm from '../views/RegisterFilm';
 import UpdateUsers from '../views/UpdateUsers';
 import RegisterUser from '../views/RegisterNewUser';
 import ListFavorites from '../views/ListFavorites';
+import Informations from '../views/Informations';
 
 Vue.use(VueRouter);
 
@@ -51,6 +52,11 @@ const routes = [
     path: "/Favorites",
     name: "Favorites",
     component: ListFavorites,
+  },
+  {
+    path: "/Informations",
+    name: "Informations",
+    component: Informations,
   },
 ];
 

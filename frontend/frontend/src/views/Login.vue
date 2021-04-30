@@ -1,13 +1,15 @@
 <template>
-  <div class="container">
+  <div class="containerLogin">
     <div class="login">
+      
+      <img src="../assets/logo.png" alt="logo">
       <div class="InputArea">
         <v-icon color="#9F8F8F" aria-hidden="false"> mdi-account </v-icon>
-        <input type="text" placeholder="Usuário" />
+        <input v-model="email" type="text" placeholder="Usuário" />
       </div>
       <div class="InputArea">
         <v-icon color="#9F8F8F" aria-hidden="false"> mdi-lock </v-icon>
-        <input v-model="inputSelected" type="password" placeholder="Senha" />
+        <input  v-model="senha" type="password" placeholder="Senha" />
       </div>
       <button @click="login()" class="btnLogin">ACESSAR</button>
     </div>
@@ -15,31 +17,51 @@
 </template>
 
 <script>
+import styled from 'vue-styled-components';
+
+export const Logo = styled.div`
+  height: 100px;
+  width: 105px;
+  background-image: url(${props => props.src});
+  background-repeat: no-repeat;
+  background-size: cover;
+`;
 export default {
+  components: {
+    Logo
+  },
   data() {
     return {
       inputSelected: "",
+      email: '',
+      senha: '',
     };
   },
   methods: {
+     makeToast(variant = null, data) {
+        this.$bvToast.toast(data, {
+          variant: variant,
+          solid: true
+        })
+    },
+
     login() {
       this.$http
         .post("/authenticate", {
-          email: "lucassantoscrfbezerra@gmail.com",
-          password: "28031998",
+          email: this.email, 
+          password: this.senha
         })
         .then((response) => {
-          console.log(response);
+          this.makeToast('success', response.data.message);
           this.$store.commit("setToken", response.data.token);
-          sessionStorage.setItem(
-            "usuario",
-            JSON.stringify(response.data.token)
-          );
+          this.$store.commit("setUserType", response.data.content.type.id);
+  
+          sessionStorage.setItem("token", JSON.stringify(response.data.token));
+          sessionStorage.setItem("usuario", response.data.content.type.id);
           this.$router.push("/Home");
         })
         .catch((erro) => {
-          console.log(erro);
-          alert(erro);
+          this.makeToast('danger', `Acesso inválido`);
         });
     },
   },
@@ -47,12 +69,13 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.containerLogin {
   height: 100vh;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #393939;
 }
 
 .login {
@@ -76,16 +99,20 @@ export default {
 }
 
 .InputArea {
+  margin-top: 20px;
   height: 40px;
   width: 100%;
   background: #525252;
   padding: 7px;
   display: flex;
   border-radius: 10px;
+  min-width: 95px;
 }
 
 input {
   margin-left: 8px;
+  width: 100%;
+  color: #fff;
 }
 
 input:focus {
@@ -100,9 +127,7 @@ input:focus {
   color: #fff;
   border-radius: 10px;
   margin-top: 10px;
-}
-
-.btnLogin:hover {
+  min-width: 95px;
 }
 
 .btnLogin:focus {

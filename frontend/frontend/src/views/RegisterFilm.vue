@@ -50,8 +50,9 @@ import styled from 'vue-styled-components';
 
 export const Container = styled.div`
     width: 100%;
-    height: auto;
-    margin-top: 60px;
+    height: 100vh;
+    padding-top: 60px;
+    background: #393939;
     display: flex;
     justify-content: center;
 `;
@@ -76,12 +77,6 @@ export default {
         }
        }
    },
-   watch: {
-       'data.lancamento'(newValue, oldValue){
-        this.lancamento = newValue.replace(/(\d{2})?(\d{2})?(\d{4})/);
-        console.log(newValue.replace(/(\d{3})?(\d{3})?(\d{3})?(\d{2})/, "$1.$2.$3-$4"));
-       }
-   },
    created() {
     this.$http
       .get("/indicates/classifications", {
@@ -91,7 +86,7 @@ export default {
           this.valuesRequests.indication = response.data.content;
         })
         .catch((erro) => {
-          console.log(erro);
+          this.makeToast('danger', erro.response.data.message);
     });
     this.$http
       .get("/genres", {
@@ -99,21 +94,20 @@ export default {
         })
         .then((response) => {
           this.valuesRequests.genre = response.data.content;
-          console.log(response);
         })
         .catch((erro) => {
-          console.log(erro);
+          this.makeToast('danger', erro.response.data.message);
     });
    },
    methods: {
+       makeToast(variant = null, data) {
+            this.$bvToast.toast(data, {
+            variant: variant,
+            solid: true
+            })
+        },
        laodImage(e){
-           let teste = document.querySelector('body #file').files[0].path;
            this.data.image = e.target.files[0];
-           console.log(e.target.files[0]);
-       },
-       regexDate(e){
-        e.preventDefault()
-           console.log(this.data);
        },
        registerNewFilm(e){
            e.preventDefault();
@@ -133,15 +127,13 @@ export default {
                 },
             })
             .then((response) => {
-                console.log('resposta', response);
+                this.makeToast('success', response.data.message);
+                this.$router.push("/Home");
             })
             .catch((erro) => {
-                console.log(erro);
+               this.makeToast('danger', erro.response.data.message);
             });
        }
-    //    teste(e){
-    //        console.log(e.target.value.replace(/^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/i, "$2/$2/$4"))
-    //    }
    }
 }
 </script>
@@ -156,6 +148,7 @@ form {
     display: flex;
     justify-content: space-around;
     width: 500px;
+    height: 200px;
     flex-wrap: wrap;
 }
 

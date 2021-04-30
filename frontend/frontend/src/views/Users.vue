@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="containerUser">
         <button class="btnActionAdd" @click="redirectRegisterUser()">
             <v-icon color="#fff" aria-hidden="false">mdi-account-plus</v-icon>
         </button>
@@ -89,15 +89,20 @@ export default {
           })
           .then((response) => {
               this.dataTable = response.data.content.usersList;
-              console.log(response);
           })
             .catch((erro) => {
-            console.log(erro);
+            this.makeToast('danger', erro.response.data.message);
         });
   },
   methods: {
+    makeToast(variant = null, data) {
+            this.$bvToast.toast(data, {
+            variant: variant,
+            solid: true
+            })
+        },
+    
     updateUser(values){
-      console.log('valores', values);
       this.$store.commit("setUser", values)
       this.$router.push('/UpdateUser');
     },
@@ -111,20 +116,20 @@ export default {
           }
        })
         .then((response) => {
+           this.makeToast('success', response.data.message);
             this.$http
               .get('users', {
                   headers: { Authorization: this.$store.getters.getToken },
                 })
                 .then((response) => {
                     this.dataTable = response.data.content.usersList;
-                    console.log(response);
                 })
-                  .catch((erro) => {
-                  console.log(erro);
+                .catch((erro) => {
+                   this.makeToast('danger', erro.response.data.message);
             });
         })
         .catch((erro) => {
-          console.log(erro);
+           this.makeToast('danger', erro.response.data.message);
       });
     },
     redirectRegisterUser(){
@@ -136,13 +141,14 @@ export default {
 
 <style scoped>
 
-.container {
+.containerUser {
   width: 100%;
-  height: auto;
-  margin-top: 60px;
+  height: 100vh;
+  padding-top: 0px;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #393939;
 }
 
 .btnActionUser {
