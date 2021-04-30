@@ -25,10 +25,10 @@ const schemaUpdateUser = Yup.object().shape({
   email: Yup.string()
     .email("Formato de email inválido")
     .required("Email é um campo obrigatório"),
-  telephone: Yup.string().matches(
-    telephoneRegex,
-    "Formato de telefone inválido"
-  ),
+  // telephone: Yup.string().matches(
+  //   telephoneRegex,
+  //   "Formato de telefone inválido"
+  // ),
 });
 
 module.exports = { schemaCreateUser, schemaUpdateUser };
