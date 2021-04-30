@@ -12,10 +12,10 @@ const schemaCreateUser = Yup.object().shape({
     .required("Senha é um campo obrigatório")
     .min(5)
     .max(15),
-  telephone: Yup.string().matches(
-    telephoneRegex,
-    "Formato de telefone inválido"
-  ),
+  // telephone: Yup.string().matches(
+  //   telephoneRegex,
+  //   "Formato de telefone inválido"
+  // ),
 });
 
 const schemaUpdateUser = Yup.object().shape({
